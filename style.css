@@ -8,6 +8,13 @@
   font-size: 36px;
 }
 
+.display {
+  width: 200px;
+  background-color: rgb(212, 211, 211);
+  border: 1px solid red;
+  text-align: right;
+}
+
 button {
   height: 40px;
   width: 40px;
