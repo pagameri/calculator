@@ -77,6 +77,7 @@ numbers.forEach((number) => {
       lastValue = null;
     }
     else if (currentValue.length === 0) {
+      negative = false;
       currentValue.push(e.target.innerText);
       display.innerText = e.target.innerText;
     } else if (currentValue.length < 9) {
@@ -88,8 +89,12 @@ numbers.forEach((number) => {
 
 operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
+    if (currentValue.length === 0 && e.target.className === 'subtract') {
+      lastValue = '0';
+      operatorPressed = e.target.className;
+    }
     // For very first calculation
-    if (lastValue === undefined || lastValue === null) {
+    else if (lastValue === undefined || lastValue === null) {
       lastValue = currentValue.join('');
       currentValue = [];
       operatorPressed = e.target.className;
