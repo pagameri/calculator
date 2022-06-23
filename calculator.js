@@ -97,7 +97,7 @@ operators.forEach((operatorBtn) => {
 });
 
 equal.addEventListener('click', e => {
-  if (display.innerText !== 0 && (subtotal === undefined || subtotal === null)) {
+  if (display.innerText !== '0' && (subtotal === undefined || subtotal === null)) {
     if (operatorPressed === undefined) {
       subtotal = display.innerText;
     } else {
@@ -115,3 +115,11 @@ equal.addEventListener('click', e => {
   }
 });
 
+const clear = document.querySelector('.clear');
+
+clear.addEventListener('click', e => {
+  operatorPressed = undefined;
+  subtotal = undefined;
+  lastValue = undefined;
+  display.innerText = '0';
+})
