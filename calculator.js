@@ -122,4 +122,4 @@ clear.addEventListener('click', e => {
   subtotal = undefined;
   lastValue = undefined;
   display.innerText = '0';
-})
+});
