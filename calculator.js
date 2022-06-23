@@ -12,6 +12,9 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+  if (b === 0) {
+    return "Error"
+  }
   return a / b;
 }
 let result;
@@ -31,6 +34,9 @@ function operate(operator, num1, num2) {
       return round(result); 
     case 'divide':
       result = divide(num1, num2);
+      if (result === "Error") {
+        return result;
+      }
       return round(result); 
   }
 }
@@ -46,22 +52,7 @@ function round(number) {
   let decimalPlacesToBe = 9 - lengthOfWholePart;
   return number.toFixed((decimalPlacesToBe));
 
-  }
-
-
-
-//   // let integer = Math.round(temp);
-//   let integerLength = temp.toString().length;
-//   if (integerLength < 9) {
-//     return number;
-//   }
-//   switch(integerLength) {
-//     case (integerLength === 9):
-//       return Math.round(number);
-//     case (integerLength > 9):
-//       return number.toFixed((9 - integerLength));
-//   }
-// }
+}
 
 const numbers = document.querySelectorAll('.numbers button');
 const display = document.querySelector('.display');
@@ -70,6 +61,7 @@ const equal = document.querySelector('.equal');
 
 let operatorPressed;
 let subtotal;
+let lastValue;
 
 numbers.forEach((number) => {
   number.addEventListener('click', e => {
@@ -88,9 +80,11 @@ operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
     if (subtotal === undefined) {
       subtotal = display.innerText;
+      lastValue = subtotal;
       operatorPressed = e.target.className;
     } else if (subtotal === null) {
       subtotal = display.innerText;
+      lastValue = subtotal;
       operatorPressed = e.target.className;
     } else if (operatorPressed === undefined) {
       operatorPressed = e.target.className;
@@ -103,53 +97,21 @@ operators.forEach((operatorBtn) => {
 });
 
 equal.addEventListener('click', e => {
-  if (subtotal === undefined && display.innerText !== 0 || subtotal === null && display.innerText !== 0) {
-    subtotal = display.innerText;
-  } 
-  else if (subtotal === undefined) {
+  if (display.innerText !== 0 && (subtotal === undefined || subtotal === null)) {
+    if (operatorPressed === undefined) {
+      subtotal = display.innerText;
+    } else {
+      subtotal = display.innerText;
+      let total = operate(operatorPressed, subtotal, lastValue);
+      display.innerText = total;
+      subtotal = null;
+    }
+  } else if (subtotal === undefined) {
     return;
   } else {
     let total = operate(operatorPressed, subtotal, display.innerText);
     display.innerText = total;
     subtotal = null;
-    operatorPressed = null;
   }
 });
 
-
-
-
-// // let displayValue;
-// let operatorsPressed;
-// let valuesEntered = [];
-
-
-// numbers.forEach((number) => {
-//   number.addEventListener('click', e => {
-//     if (display.innerText === '0') {
-//       display.innerText = e.target.innerText;
-//     }
-//     else if (display.innerText.length < 11) {
-//       display.innerText += e.target.innerText;
-//     }
-//   })
-// });
-
-// operators.forEach((operatorBtn) => {
-//   operatorBtn.addEventListener('click', e => {
-//     valuesEntered.push(display.innerText);
-//     display.innerText = '0';
-//     operatorsPressed.push(e.target.className);
-//     console.log(valuesEntered);
-//     console.log(operatorsPressed);
-//   })
-// });
-
-// equal.addEventListener('click', e => {
-//   valuesEntered.push(display.innerText);
-//   display.innerText = calculateTotal(operatorsPressed, valuesEntered);
-// })
-
-// function calculateTotal() {
-
-// }
