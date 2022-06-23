@@ -1,4 +1,3 @@
-
 function add(a, b) {
   return a + b;
 }
@@ -17,8 +16,9 @@ function divide(a, b) {
   }
   return a / b;
 }
-let result;
+
 function operate(operator, num1, num2) {
+  let result;
   num1 = parseFloat(num1);
   num2 = parseFloat(num2);
 
@@ -41,6 +41,7 @@ function operate(operator, num1, num2) {
   }
 }
 
+// Round long decimal numbers to 9 digits
 function round(number) {
   let temp = number;
   let lengthOfNumber = temp.toString().length;
@@ -51,75 +52,161 @@ function round(number) {
   let lengthOfWholePart = temp2.toString().length;
   let decimalPlacesToBe = 9 - lengthOfWholePart;
   return number.toFixed((decimalPlacesToBe));
-
 }
 
 const numbers = document.querySelectorAll('.numbers button');
 const display = document.querySelector('.display');
 const operators = document.querySelectorAll('.operators button');
 const equal = document.querySelector('.equal');
+const clear = document.querySelector('.clear');
 
 let operatorPressed;
 let subtotal;
 let lastValue;
+let newValue;
+let currentValue = [];
+let totalled = false;
 
 numbers.forEach((number) => {
   number.addEventListener('click', e => {
-    if (display.innerText === '0' || subtotal === null) {
+    // If totalled and digit pressed, start new calculation
+    if (totalled) {
+      totalled = false;
+      currentValue.push(e.target.innerText);
       display.innerText = e.target.innerText;
+      lastValue = null;
     }
-    else if (display.innerText === subtotal) {
+    else if (currentValue.length === 0) {
+      currentValue.push(e.target.innerText);
       display.innerText = e.target.innerText;
-    } else if (display.innerText.length < 9) {
+    } else if (currentValue.length < 9) {
+      currentValue.push(e.target.innerText);
       display.innerText += e.target.innerText;
-    }
+    } 
   });
 });
 
 operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
-    if (subtotal === undefined) {
-      subtotal = display.innerText;
+    // For very first calculation
+    if (lastValue === undefined || lastValue === null) {
+      lastValue = currentValue.join('');
+      currentValue = [];
+      operatorPressed = e.target.className;
+    }
+    // If calculation has been totalled
+     else if (totalled) {
+      totalled = false;
+      newValue = currentValue.join('');
+      currentValue = [];
+      operatorPressed = e.target.className;
+      subtotal = operate(operatorPressed, lastValue, newValue);
+      display.innerText = subtotal;
       lastValue = subtotal;
-      operatorPressed = e.target.className;
-    } else if (subtotal === null) {
-      subtotal = display.innerText;
-      lastValue = subtotal;
-      operatorPressed = e.target.className;
-    } else if (operatorPressed === undefined) {
-      operatorPressed = e.target.className;
-    } else {
-      subtotal = operate(operatorPressed, subtotal, display.innerText).toString();
+    }
+    // For any subsequent operations
+    else {
+      newValue = currentValue.join('');
+      currentValue = [];
+      subtotal = operate(operatorPressed, lastValue, newValue);
       operatorPressed = e.target.className;
       display.innerText = subtotal;
+      lastValue = subtotal;
     }
   });
 });
 
+
 equal.addEventListener('click', e => {
-  if (display.innerText !== '0' && (subtotal === undefined || subtotal === null)) {
-    if (operatorPressed === undefined) {
-      subtotal = display.innerText;
-    } else {
-      subtotal = display.innerText;
-      let total = operate(operatorPressed, subtotal, lastValue);
-      display.innerText = total;
-      subtotal = null;
-    }
-  } else if (subtotal === undefined) {
+  let total;
+  // If equal pressed before operation: do nothing
+  if (lastValue === undefined) {
     return;
-  } else {
-    let total = operate(operatorPressed, subtotal, display.innerText);
+  }
+  // For subsequent equals without any further operation
+  if (totalled) {
+    total = operate(operatorPressed, lastValue, newValue);
     display.innerText = total;
-    subtotal = null;
+    lastValue = total;
+  }
+  else {
+    newValue = currentValue.join('');
+    currentValue = [];
+    total = operate(operatorPressed, lastValue, newValue);
+    display.innerText = total;
+    lastValue = total;
+    totalled = true;
   }
 });
-
-const clear = document.querySelector('.clear');
 
 clear.addEventListener('click', e => {
   operatorPressed = undefined;
   subtotal = undefined;
   lastValue = undefined;
+  newValue = undefined;
+  currentValue = [];
+  totalled = false;
   display.innerText = '0';
 });
+
+
+// numbers.forEach((number) => {
+//   number.addEventListener('click', e => {
+//     if (display.innerText === '0' || subtotal === null) {
+//       display.innerText = e.target.innerText;
+//     }
+//     else if (display.innerText === subtotal) {
+//       display.innerText = e.target.innerText;
+//     } else if (display.innerText.length < 9) {
+//       display.innerText += e.target.innerText;
+//     }
+//   });
+// });
+
+// operators.forEach((operatorBtn) => {
+//   operatorBtn.addEventListener('click', e => {
+//     if (subtotal === undefined) {
+//       subtotal = display.innerText;
+//       lastValue = subtotal;
+//       operatorPressed = e.target.className;
+//     } else if (subtotal === null) {
+//       subtotal = display.innerText;
+//       lastValue = subtotal;
+//       operatorPressed = e.target.className;
+//     } else if (operatorPressed === undefined) {
+//       operatorPressed = e.target.className;
+//     } else {
+//       subtotal = operate(operatorPressed, subtotal, display.innerText).toString();
+//       operatorPressed = e.target.className;
+//       display.innerText = subtotal;
+//     }
+//   });
+// });
+
+// equal.addEventListener('click', e => {
+//   if (display.innerText !== '0' && (subtotal === undefined || subtotal === null)) {
+//     if (operatorPressed === undefined) {
+//       subtotal = display.innerText;
+//     } else {
+//       subtotal = display.innerText;
+//       let total = operate(operatorPressed, subtotal, lastValue);
+//       display.innerText = total;
+//       subtotal = null;
+//     }
+//   } else if (subtotal === undefined) {
+//     return;
+//   } else {
+//     let total = operate(operatorPressed, subtotal, display.innerText);
+//     display.innerText = total;
+//     subtotal = null;
+//   }
+// });
+
+// const clear = document.querySelector('.clear');
+
+// clear.addEventListener('click', e => {
+//   operatorPressed = undefined;
+//   subtotal = undefined;
+//   lastValue = undefined;
+//   display.innerText = '0';
+// });
