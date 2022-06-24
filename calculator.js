@@ -115,6 +115,7 @@ operators.forEach((operatorBtn) => {
       lastValue = '0';
       operatorPressed = e.target.className;
     }
+    // For first round of calculations
     else if (lastValue === undefined || lastValue === null) {
       lastValue = currentValue.join('');
       currentValue = [];
@@ -135,7 +136,6 @@ operators.forEach((operatorBtn) => {
     }
   });
 });
-
 
 equal.addEventListener('click', e => {
   let total;
@@ -187,6 +187,6 @@ backspace.addEventListener('click', e => {
   }
 });
 
-window.addEventListener('keydown', e => {
-  console.log(`key=${e.key}, code=${e.code}`);
-});
+// window.addEventListener('keydown', e => {
+//   console.log(`key=${e.key}, code=${e.code}`);
+// });
