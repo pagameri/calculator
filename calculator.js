@@ -13,6 +13,8 @@ function multiply(a, b) {
 function divide(a, b) {
   if (b === 0) {
     return "Error"
+  } else if (a === 0) {
+    return a;
   }
   return a / b;
 }
@@ -69,18 +71,32 @@ let totalled = false;
 
 numbers.forEach((number) => {
   number.addEventListener('click', e => {
+    // Handle decimal point
+    if (e.target.className === 'dot') {
+      if (currentValue.includes('.')) {
+        return
+      } else if (currentValue.length === 0) {
+        currentValue.push('0.');
+        display.innerText = '0.';
+      } else {
+        currentValue.push(e.target.innerText);
+        display.innerText += e.target.innerText;
+      }
+    }
     // If totalled and digit pressed, start new calculation
-    if (totalled) {
+    else if (totalled) {
       totalled = false;
       currentValue.push(e.target.innerText);
       display.innerText = e.target.innerText;
       lastValue = null;
     }
+    // First digit entered 
     else if (currentValue.length === 0) {
-      negative = false;
       currentValue.push(e.target.innerText);
       display.innerText = e.target.innerText;
-    } else if (currentValue.length < 9) {
+    }
+    // Further digits entered
+    else if (currentValue.length < 9) {
       currentValue.push(e.target.innerText);
       display.innerText += e.target.innerText;
     } 
@@ -89,11 +105,11 @@ numbers.forEach((number) => {
 
 operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
-    if (currentValue.length === 0 && e.target.className === 'subtract') {
+    // If calculation starts with operator pressed
+    if (currentValue.length === 0) {
       lastValue = '0';
       operatorPressed = e.target.className;
     }
-    // For very first calculation
     else if (lastValue === undefined || lastValue === null) {
       lastValue = currentValue.join('');
       currentValue = [];
@@ -153,65 +169,3 @@ clear.addEventListener('click', e => {
   totalled = false;
   display.innerText = '0';
 });
-
-
-// numbers.forEach((number) => {
-//   number.addEventListener('click', e => {
-//     if (display.innerText === '0' || subtotal === null) {
-//       display.innerText = e.target.innerText;
-//     }
-//     else if (display.innerText === subtotal) {
-//       display.innerText = e.target.innerText;
-//     } else if (display.innerText.length < 9) {
-//       display.innerText += e.target.innerText;
-//     }
-//   });
-// });
-
-// operators.forEach((operatorBtn) => {
-//   operatorBtn.addEventListener('click', e => {
-//     if (subtotal === undefined) {
-//       subtotal = display.innerText;
-//       lastValue = subtotal;
-//       operatorPressed = e.target.className;
-//     } else if (subtotal === null) {
-//       subtotal = display.innerText;
-//       lastValue = subtotal;
-//       operatorPressed = e.target.className;
-//     } else if (operatorPressed === undefined) {
-//       operatorPressed = e.target.className;
-//     } else {
-//       subtotal = operate(operatorPressed, subtotal, display.innerText).toString();
-//       operatorPressed = e.target.className;
-//       display.innerText = subtotal;
-//     }
-//   });
-// });
-
-// equal.addEventListener('click', e => {
-//   if (display.innerText !== '0' && (subtotal === undefined || subtotal === null)) {
-//     if (operatorPressed === undefined) {
-//       subtotal = display.innerText;
-//     } else {
-//       subtotal = display.innerText;
-//       let total = operate(operatorPressed, subtotal, lastValue);
-//       display.innerText = total;
-//       subtotal = null;
-//     }
-//   } else if (subtotal === undefined) {
-//     return;
-//   } else {
-//     let total = operate(operatorPressed, subtotal, display.innerText);
-//     display.innerText = total;
-//     subtotal = null;
-//   }
-// });
-
-// const clear = document.querySelector('.clear');
-
-// clear.addEventListener('click', e => {
-//   operatorPressed = undefined;
-//   subtotal = undefined;
-//   lastValue = undefined;
-//   display.innerText = '0';
-// });
