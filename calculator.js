@@ -98,11 +98,9 @@ numbers.forEach((number) => {
       totalled = false;
       enterFirstDigit(e.target.innerText);
       lastValue = null;
-    }
-    else if (currentValue.length === 0) {
+    } else if (currentValue.length === 0) {
       enterFirstDigit(e.target.innerText);
-    }
-    else if (currentValue.length < 9) {
+    } else if (currentValue.length < 9) {
       enterFurtherDigits(e.target.innerText);
     } 
   });
@@ -120,8 +118,7 @@ operators.forEach((operatorBtn) => {
       lastValue = currentValue.join('');
       currentValue = [];
       operatorPressed = e.target.className;
-    }
-     else if (totalled) {
+    } else if (totalled) {
       totalled = false;
       operatorPressed = e.target.className;
     }
@@ -156,8 +153,7 @@ equal.addEventListener('click', e => {
     display.innerText = total;
     lastValue = total;
     totalled = true;
-  }
-  else {
+  } else {
     newValue = currentValue.join('');
     currentValue = [];
     total = operate(operatorPressed, lastValue, newValue);
@@ -178,15 +174,14 @@ clear.addEventListener('click', e => {
 });
 
 backspace.addEventListener('click', e => {
-  if (currentValue.length !== 0) {
+  if (currentValue.length > 1) {
     currentValue.pop();
     display.innerText = display.innerText.slice(0, -1);
-  }
-  else {
+  } else if (currentValue.length === 1) {
+    currentValue.pop();
+    display.innerText = '0';
+  } else {
     return;
   }
 });
 
-// window.addEventListener('keydown', e => {
-//   console.log(`key=${e.key}, code=${e.code}`);
-// });
