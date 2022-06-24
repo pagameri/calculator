@@ -56,9 +56,10 @@ function round(number) {
   return number.toFixed((decimalPlacesToBe));
 }
 
-const numbers = document.querySelectorAll('.numbers button');
+const numbers = document.querySelectorAll('.numbers');
+const decimal = document.querySelector('.decimal')
 const display = document.querySelector('.display');
-const operators = document.querySelectorAll('.operators button');
+const operators = document.querySelectorAll('.operators');
 const equal = document.querySelector('.equal');
 const clear = document.querySelector('.clear');
 const backspace = document.querySelector('.backspace');
@@ -82,19 +83,8 @@ function enterFurtherDigits(digit) {
 
 numbers.forEach((number) => {
   number.addEventListener('click', e => {
-    // Handle decimal point
-    if (e.target.className === 'dot') {
-      if (currentValue.includes('.')) {
-        return
-      } else if (currentValue.length === 0) {
-        currentValue.push('0.');
-        display.innerText = '0.';
-      } else {
-        enterFurtherDigits(e.target.innerText);
-      }
-    }
     // If totalled and digit pressed, start new calculation
-    else if (totalled) {
+    if (totalled) {
       totalled = false;
       enterFirstDigit(e.target.innerText);
       lastValue = null;
@@ -106,28 +96,39 @@ numbers.forEach((number) => {
   });
 });
 
+decimal.addEventListener('click', e => {
+  if (currentValue.includes('.')) {
+    return
+  } else if (currentValue.length === 0) {
+    currentValue.push('0.');
+    display.innerText = '0.';
+  } else {
+    enterFurtherDigits(e.target.innerText);
+  }
+});
+
 operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
     // If calculation starts with operator pressed
     if (currentValue.length === 0 && !totalled) {
       lastValue = '0';
-      operatorPressed = e.target.className;
+      operatorPressed = e.target.id;
     }
     // For first round of calculations
     else if (lastValue === undefined || lastValue === null) {
       lastValue = currentValue.join('');
       currentValue = [];
-      operatorPressed = e.target.className;
+      operatorPressed = e.target.id;
     } else if (totalled) {
       totalled = false;
-      operatorPressed = e.target.className;
+      operatorPressed = e.target.id;
     }
     // For any subsequent operations
     else {
       newValue = currentValue.join('');
       currentValue = [];
       subtotal = operate(operatorPressed, lastValue, newValue);
-      operatorPressed = e.target.className;
+      operatorPressed = e.target.id;
       display.innerText = subtotal;
       lastValue = subtotal;
     }
