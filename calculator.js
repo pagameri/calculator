@@ -61,6 +61,7 @@ const display = document.querySelector('.display');
 const operators = document.querySelectorAll('.operators button');
 const equal = document.querySelector('.equal');
 const clear = document.querySelector('.clear');
+const backspace = document.querySelector('.backspace');
 
 let operatorPressed;
 let subtotal;
@@ -168,4 +169,14 @@ clear.addEventListener('click', e => {
   currentValue = [];
   totalled = false;
   display.innerText = '0';
+});
+
+backspace.addEventListener('click', e => {
+  if (currentValue.length !== 0) {
+    currentValue.pop();
+    display.innerText = display.innerText.slice(0, -1);
+  }
+  else {
+    return;
+  }
 });
