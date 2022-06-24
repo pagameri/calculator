@@ -70,6 +70,16 @@ let newValue;
 let currentValue = [];
 let totalled = false;
 
+function enterFirstDigit(digit) {
+  currentValue.push(digit);
+  display.innerText = digit;
+}
+
+function enterFurtherDigits(digit) {
+  currentValue.push(digit);
+  display.innerText += digit;
+}
+
 numbers.forEach((number) => {
   number.addEventListener('click', e => {
     // Handle decimal point
@@ -80,26 +90,20 @@ numbers.forEach((number) => {
         currentValue.push('0.');
         display.innerText = '0.';
       } else {
-        currentValue.push(e.target.innerText);
-        display.innerText += e.target.innerText;
+        enterFurtherDigits(e.target.innerText);
       }
     }
     // If totalled and digit pressed, start new calculation
     else if (totalled) {
       totalled = false;
-      currentValue.push(e.target.innerText);
-      display.innerText = e.target.innerText;
+      enterFirstDigit(e.target.innerText);
       lastValue = null;
     }
-    // First digit entered 
     else if (currentValue.length === 0) {
-      currentValue.push(e.target.innerText);
-      display.innerText = e.target.innerText;
+      enterFirstDigit(e.target.innerText);
     }
-    // Further digits entered
     else if (currentValue.length < 9) {
-      currentValue.push(e.target.innerText);
-      display.innerText += e.target.innerText;
+      enterFurtherDigits(e.target.innerText);
     } 
   });
 });
@@ -107,7 +111,7 @@ numbers.forEach((number) => {
 operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
     // If calculation starts with operator pressed
-    if (currentValue.length === 0) {
+    if (currentValue.length === 0 && !totalled) {
       lastValue = '0';
       operatorPressed = e.target.className;
     }
@@ -116,15 +120,9 @@ operators.forEach((operatorBtn) => {
       currentValue = [];
       operatorPressed = e.target.className;
     }
-    // If calculation has been totalled
      else if (totalled) {
       totalled = false;
-      newValue = currentValue.join('');
-      currentValue = [];
       operatorPressed = e.target.className;
-      subtotal = operate(operatorPressed, lastValue, newValue);
-      display.innerText = subtotal;
-      lastValue = subtotal;
     }
     // For any subsequent operations
     else {
@@ -150,6 +148,14 @@ equal.addEventListener('click', e => {
     total = operate(operatorPressed, lastValue, newValue);
     display.innerText = total;
     lastValue = total;
+  }
+  // After at least one totalled operation and immediate operator press:
+  else if (currentValue.length === 0) {
+    newValue = lastValue;
+    total = operate(operatorPressed, lastValue, newValue);
+    display.innerText = total;
+    lastValue = total;
+    totalled = true;
   }
   else {
     newValue = currentValue.join('');
@@ -179,4 +185,8 @@ backspace.addEventListener('click', e => {
   else {
     return;
   }
+});
+
+window.addEventListener('keydown', e => {
+  console.log(`key=${e.key}, code=${e.code}`);
 });
