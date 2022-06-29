@@ -86,6 +86,7 @@ numbers.forEach((number) => {
     if (totalled) { // Start new calculation
       totalled = false;
       enterFirstDigit(e.target.innerText);
+
       lastValue = null;
     } else if (currentValue.length === 0) {
       enterFirstDigit(e.target.innerText);
@@ -110,19 +111,25 @@ operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
     if (currentValue.length === 0 && !totalled) { // First btn is operator
       lastValue = '0';
+
       operatorPressed = e.target.id;
     } else if (lastValue === undefined || lastValue === null) { // First round of calculations
       lastValue = currentValue.join('');
       currentValue = [];
+
       operatorPressed = e.target.id;
     } else if (totalled) {
       totalled = false;
+
       operatorPressed = e.target.id;
     } else { // Subsequent calculations
       newValue = currentValue.join('');
       currentValue = [];
+
       subtotal = operate(operatorPressed, lastValue, newValue);
+
       operatorPressed = e.target.id;
+
       display.innerText = subtotal;
       lastValue = subtotal;
     }
@@ -138,18 +145,23 @@ equal.addEventListener('click', e => {
   
   if (totalled) { // Totalled and = pressed again
     total = operate(operatorPressed, lastValue, newValue);
+    
     display.innerText = total;
     lastValue = total;
   } else if (currentValue.length === 0) { // After at least one totalled operation with immediate operator press:
     newValue = lastValue;
+    
     total = operate(operatorPressed, lastValue, newValue);
+
     display.innerText = total;
     lastValue = total;
     totalled = true;
   } else {
     newValue = currentValue.join('');
     currentValue = [];
+
     total = operate(operatorPressed, lastValue, newValue);
+
     display.innerText = total;
     lastValue = total;
     totalled = true;
@@ -169,9 +181,11 @@ clear.addEventListener('click', e => {
 backspace.addEventListener('click', e => {
   if (currentValue.length > 1) {
     currentValue.pop();
+
     display.innerText = display.innerText.slice(0, -1);
   } else if (currentValue.length === 1) {
     currentValue.pop();
+    
     display.innerText = '0';
   } else {
     return;
