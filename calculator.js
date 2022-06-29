@@ -43,13 +43,13 @@ function operate(operator, num1, num2) {
   }
 }
 
-// Round long decimal numbers to 9 digits
-function round(number) {
+function round(number) { // Round long decimals to 9 digits
   let temp = number;
   let lengthOfNumber = temp.toString().length;
   if (lengthOfNumber <= 9) {
     return number;
   }
+
   let temp2 = Math.trunc(number);
   let lengthOfWholePart = temp2.toString().length;
   let decimalPlacesToBe = 9 - lengthOfWholePart;
@@ -83,8 +83,7 @@ function enterFurtherDigits(digit) {
 
 numbers.forEach((number) => {
   number.addEventListener('click', e => {
-    // If totalled and digit pressed, start new calculation
-    if (totalled) {
+    if (totalled) { // Start new calculation
       totalled = false;
       enterFirstDigit(e.target.innerText);
       lastValue = null;
@@ -109,22 +108,17 @@ decimal.addEventListener('click', e => {
 
 operators.forEach((operatorBtn) => {
   operatorBtn.addEventListener('click', e => {
-    // If calculation starts with operator pressed
-    if (currentValue.length === 0 && !totalled) {
+    if (currentValue.length === 0 && !totalled) { // First btn is operator
       lastValue = '0';
       operatorPressed = e.target.id;
-    }
-    // For first round of calculations
-    else if (lastValue === undefined || lastValue === null) {
+    } else if (lastValue === undefined || lastValue === null) { // First round of calculations
       lastValue = currentValue.join('');
       currentValue = [];
       operatorPressed = e.target.id;
     } else if (totalled) {
       totalled = false;
       operatorPressed = e.target.id;
-    }
-    // For any subsequent operations
-    else {
+    } else { // Subsequent calculations
       newValue = currentValue.join('');
       currentValue = [];
       subtotal = operate(operatorPressed, lastValue, newValue);
@@ -137,18 +131,16 @@ operators.forEach((operatorBtn) => {
 
 equal.addEventListener('click', e => {
   let total;
-  // If equal pressed before operation: do nothing
-  if (lastValue === undefined) {
+  if (lastValue === undefined) { // First btn pressed is '='
     return;
   }
-  // For subsequent equals without any further operation
-  if (totalled) {
+  
+  
+  if (totalled) { // Totalled and = pressed again
     total = operate(operatorPressed, lastValue, newValue);
     display.innerText = total;
     lastValue = total;
-  }
-  // After at least one totalled operation and immediate operator press:
-  else if (currentValue.length === 0) {
+  } else if (currentValue.length === 0) { // After at least one totalled operation with immediate operator press:
     newValue = lastValue;
     total = operate(operatorPressed, lastValue, newValue);
     display.innerText = total;
