@@ -27,23 +27,26 @@ function operate(operator, num1, num2) {
   switch(operator) {
     case 'add':
       result = add(num1, num2);
-      return round(result);
+      return roundDecimals(result);
     case 'subtract':
       result = subtract(num1, num2);
-      return round(result); 
+      return roundDecimals(result); 
     case 'multiply':
       result = multiply(num1, num2);
-      return round(result); 
+      return roundDecimals(result); 
     case 'divide':
       result = divide(num1, num2);
       if (result === "Error") {
         return result;
       }
-      return round(result); 
+      return roundDecimals(result); 
   }
 }
 
-function round(number) { // Round long decimals to 9 digits
+function roundDecimals(number) { // Round long decimals to 9 digits
+  if (number % 1 === 0) {
+    return number;
+  }
   let temp = number;
   let lengthOfNumber = temp.toString().length;
   if (lengthOfNumber <= 9) {
@@ -148,7 +151,7 @@ equal.addEventListener('click', e => {
     
     display.innerText = total;
     lastValue = total;
-  } else if (currentValue.length === 0) { // After at least one totalled operation with immediate operator press:
+  } else if (currentValue.length === 0) { // Btn sequence: '=', operator, '=':
     newValue = lastValue;
     
     total = operate(operatorPressed, lastValue, newValue);
@@ -161,8 +164,11 @@ equal.addEventListener('click', e => {
     currentValue = [];
 
     total = operate(operatorPressed, lastValue, newValue);
-
-    display.innerText = total;
+    if (total > 999999999) {
+      display.innerText = 'too large'
+    } else {
+      display.innerText = total;
+    }
     lastValue = total;
     totalled = true;
   }
@@ -185,7 +191,7 @@ backspace.addEventListener('click', e => {
     display.innerText = display.innerText.slice(0, -1);
   } else if (currentValue.length === 1) {
     currentValue.pop();
-    
+
     display.innerText = '0';
   } else {
     return;
